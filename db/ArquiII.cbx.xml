@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="ArquiII">
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|ALU:ALU|lpm_divide:Mod0" CBX_FILE_NAME="lpm_divide_ulo.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|RegisterFile:RF|altsyncram:Reg_rtl_0" CBX_FILE_NAME="altsyncram_vdj1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|ALU:ALU|lpm_divide:Div0" CBX_FILE_NAME="lpm_divide_rto.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|ALU:ALU|lpm_mult:Mult0" CBX_FILE_NAME="mult_h1t.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|RAM:Memoria|altsyncram:ram_rtl_0" CBX_FILE_NAME="altsyncram_vc81.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|DATAPATH|RegisterFile:RF|altsyncram:Reg_rtl_1" CBX_FILE_NAME="altsyncram_vdj1.tdf"/>
+	</PROJECT>
+</LOG_ROOT>
