@@ -1,0 +1,53 @@
+-- A library clause declares a name as a library.  It 
+-- does not create the library; it simply forward declares 
+-- it. 
+library IEEE;
+
+
+-- Commonly imported packages:
+
+	-- STD_LOGIC and STD_LOGIC_VECTOR types, and relevant functions
+	use ieee.std_logic_1164.all;
+
+	-- SIGNED and UNSIGNED types, and relevant functions
+	use ieee.numeric_std.all;
+
+
+	
+entity PC2 is
+
+	port
+	(
+		-- Input ports
+		PC_in	  : in  natural range 0 to 31;
+		Clk	  : in  std_logic;
+		--Enable  : in std_logic;
+		-- Output ports
+		PC_out  : out natural range 0 to 31
+		
+	);
+	
+end PC2;
+
+-- Library Clause(s) (optional)
+-- Use Clause(s) (optional)
+
+architecture behaviour of PC2 is
+
+	-- Declarations (optional)
+
+begin
+
+
+
+process(Clk,PC_in)
+	begin
+	if rising_edge(Clk) then
+		
+		PC_out <= PC_in;
+		--if Enable = '1' then
+		--HOLI
+	end if;
+	
+end process;
+end behaviour;

@@ -1,0 +1,135 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 2017  Intel Corporation. All rights reserved.
+# Your use of Intel Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Intel Program License 
+# Subscription Agreement, the Intel Quartus Prime License Agreement,
+# the Intel MegaCore Function License Agreement, or other 
+# applicable license agreement, including, without limitation, 
+# that your use is for the sole purpose of programming logic 
+# devices manufactured by Intel and sold by Intel or its 
+# authorized distributors.  Please refer to the applicable 
+# agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus Prime
+# Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
+# Date created = 00:42:02  October 22, 2017
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		ArquiII_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus Prime software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Cyclone II"
+set_global_assignment -name DEVICE EP2C20F484C7
+set_global_assignment -name TOP_LEVEL_ENTITY DATAPATH
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 17.0.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "00:42:02  OCTOBER 22, 2017"
+set_global_assignment -name LAST_QUARTUS_VERSION 13.0
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name VHDL_FILE ALU.vhd
+set_global_assignment -name VHDL_FILE RAM.vhd
+set_global_assignment -name VHDL_FILE RegisterFile.vhd
+set_global_assignment -name VHDL_FILE PC.vhd
+set_global_assignment -name VHDL_FILE DATAPATH.vhd
+set_global_assignment -name VHDL_FILE MUX2.vhd
+set_global_assignment -name VHDL_FILE ImmExtend.vhd
+set_global_assignment -name VHDL_FILE bit5MUX2.vhd
+set_global_assignment -name VHDL_FILE IR.vhd
+set_global_assignment -name VHDL_FILE MDR.vhd
+set_global_assignment -name SIMULATION_MODE FUNCTIONAL
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST ON -section_id eda_simulation
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name VECTOR_OUTPUT_FORMAT VWF
+set_global_assignment -name VHDL_FILE RegistroA.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE regAB.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE REGGA.vwf
+set_global_assignment -name VHDL_FILE ORGate.vhd
+set_global_assignment -name VHDL_FILE bit2MUX4.vhd
+set_global_assignment -name VHDL_FILE CompuertaAND.vhd
+set_global_assignment -name VHDL_FILE UnidadDeControl.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE UnidadCon.vwf
+set_global_assignment -name VHDL_FILE MUX3.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE NEW.vwf
+set_global_assignment -name VHDL_FILE bit5MUX4.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE PruebaALU.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE PruebaRAM.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE PruebaRF.vwf
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VECTOR_WAVEFORM_FILE PruebaTodo.vwf
+set_global_assignment -name VHDL_FILE MUXENTRADAS.vhd
+set_global_assignment -name VHDL_FILE Input8Extend.vhd
+set_global_assignment -name VHDL_FILE SensorExtend.vhd
+set_global_assignment -name VHDL_FILE DivisorFrecuencia.vhd
+set_global_assignment -name VHDL_FILE BCD.vhd
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_L1 -to Clkfpga
+set_location_assignment PIN_R22 -to IPushB0
+set_location_assignment PIN_R21 -to IPushB1
+set_location_assignment PIN_T22 -to IPushB2
+set_location_assignment PIN_L2 -to IRunOrWalk
+set_location_assignment PIN_L22 -to Switch0
+set_location_assignment PIN_L21 -to Switch1
+set_location_assignment PIN_M22 -to Switch2
+set_location_assignment PIN_V12 -to Switch3
+set_location_assignment PIN_W12 -to Switch4
+set_location_assignment PIN_U12 -to Switch5
+set_location_assignment PIN_U11 -to Switch6
+set_location_assignment PIN_M2 -to Switch7
+set_location_assignment PIN_M1 -to IControl
+set_location_assignment PIN_A13 -to ISensor0
+set_location_assignment PIN_T21 -to ResetClock
+set_location_assignment PIN_J2 -to sieteS0[0]
+set_location_assignment PIN_J1 -to sieteS0[1]
+set_location_assignment PIN_H2 -to sieteS0[2]
+set_location_assignment PIN_E2 -to sieteS0[6]
+set_location_assignment PIN_F1 -to sieteS0[5]
+set_location_assignment PIN_F2 -to sieteS0[4]
+set_location_assignment PIN_H1 -to sieteS0[3]
+set_location_assignment PIN_D1 -to sieteS1[6]
+set_location_assignment PIN_D2 -to sieteS1[5]
+set_location_assignment PIN_G3 -to sieteS1[4]
+set_location_assignment PIN_H4 -to sieteS1[3]
+set_location_assignment PIN_H5 -to sieteS1[2]
+set_location_assignment PIN_H6 -to sieteS1[1]
+set_location_assignment PIN_E1 -to sieteS1[0]
+set_location_assignment PIN_D3 -to sieteS2[6]
+set_location_assignment PIN_E4 -to sieteS2[5]
+set_location_assignment PIN_E3 -to sieteS2[4]
+set_location_assignment PIN_C1 -to sieteS2[3]
+set_location_assignment PIN_C2 -to sieteS2[2]
+set_location_assignment PIN_G6 -to sieteS2[1]
+set_location_assignment PIN_G5 -to sieteS2[0]
+set_location_assignment PIN_D4 -to sieteS3[6]
+set_location_assignment PIN_F3 -to sieteS3[5]
+set_location_assignment PIN_L8 -to sieteS3[4]
+set_location_assignment PIN_J4 -to sieteS3[3]
+set_location_assignment PIN_D6 -to sieteS3[2]
+set_location_assignment PIN_D5 -to sieteS3[1]
+set_location_assignment PIN_F4 -to sieteS3[0]
+set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE "C:/Users/HP-Pro/Documents/proy/LAB JASON/NEW.vwf"
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

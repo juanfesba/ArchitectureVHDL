@@ -1,0 +1,491 @@
+Y IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+use IEEE.std_logic_arith.all;
+
+entity UnidadDeControl is
+port
+(
+	Clock: in std_logic;
+	Enable: in std_logic;
+	EnableInput: in std_logic;
+	Opcode: in std_logic_vector(5 downto 0);
+	DataDst: out std_logic_vector(2 downto 0);
+	PCWriteCon: out std_logic;
+	PCSource: out std_logic_vector(1 downto 0);
+	PCWrite: out std_logic;
+	IorD: out std_logic;
+	MemRead: out std_logic;
+	MemWrite: out std_logic;
+	IRWrite: out std_logic;
+	RegDst: out std_logic;
+	MemtoReg: out std_logic_vector(1 downto 0);
+	RegWrite: out std_logic;
+	AluSrcA: out std_logic;
+	AluSrcB: out std_logic_vector(1 downto 0);
+	AluOP: out std_logic_vector(2 downto 0);
+	ResetPC: out std_logic;
+	EnableIR: out std_logic;
+	MDRWrite: out std_logic;
+	EnableMDR: out std_logic
+);
+end entity;
+
+architecture UnidadDeControl of UnidadDeControl is
+	type ESTADO is
+	(EstadoReset, EstadoFetch, EstadoDecode, EstadoExecuteTipoR, EstadoBEQ, EstadoBNE, EstadoMYQ, EstadoMNQ, 
+	 EstadoComplTipoI, EstadoJump, EstadoComplTipoR, EstadoExecuteADDI, EstadoCalcDir, EstadoLW, EstadoSW, EstadoWB, 
+	 EstadoTempIN, EstadoModoIN, EstadoEntrenoIN);
+	signal EstadoActual : ESTADO;
+begin
+	process(Clock, Enable, Opcode, EnableInput)
+		begin
+			if(rising_edge(Clock)) then
+				if(Enable = '1') then
+					case EstadoActual is
+						when EstadoReset =>
+							EstadoActual <= EstadoFetch;
+						when EstadoFetch =>
+							EstadoActual <= EstadoDecode;
+						when EstadoDecode =>
+							if(Opcode = "000000") then
+								EstadoActual <= EstadoExecuteTipoR;
+							elsif (Opcode = "000001" or Opcode = "000011" or Opcode = "000111" or Opcode = "100011" or Opcode = "101011") then
+								EstadoActual <= EstadoCalcDir;
+							elsif (Opcode = "001000") then
+								EstadoActual <= EstadoExecuteADDI;
+							elsif (Opcode = "000010") then
+								EstadoActual <= EstadoJump;
+							elsif (Opcode = "000100") then
+								EstadoActual <= EstadoBEQ;
+							elsif (Opcode = "000101") then
+								EstadoActual <= EstadoBNE;
+							elsif (Opcode = "001111") then
+								EstadoActual <= EstadoMNQ;
+							elsif (Opcode = "011111") then
+								EstadoActual <= EstadoMYQ;
+							end if;
+						when EstadoExecuteTipoR =>
+							EstadoActual <= EstadoComplTipoR;
+						when EstadoComplTipoR =>
+							EstadoActual <= EstadoFetch;
+						when EstadoCalcDir =>
+							if (Opcode = "100011") then
+								EstadoActual <= EstadoLW;
+							elsif (Opcode = "101011") then
+								EstadoActual <= EstadoSW;
+							elsif (Opcode = "000001") then
+								EstadoActual <= EstadoModoIN;
+							elsif (Opcode = "000011") then
+								EstadoActual <= EstadoTempIN;
+							elsif (Opcode = "000111") then
+								EstadoActual <= EstadoEntrenoIN;
+							end if;
+						when EstadoLW =>
+							EstadoActual <= EstadoWB;
+						when EstadoSW =>
+							EstadoActual <= EstadoFetch;
+						when EstadoExecuteADDI =>
+							EstadoActual <= EstadoComplTipoI;
+						when EstadoJump =>
+							EstadoActual <= EstadoFetch;
+						when EstadoBEQ =>
+							EstadoActual <= EstadoFetch;
+						when EstadoBNE =>
+							EstadoActual <= EstadoFetch;
+						when EstadoMNQ =>
+							EstadoActual <= EstadoFetch;
+						when EstadoMYQ =>
+							EstadoActual <= EstadoFetch;
+						when EstadoModoIN =>
+							if(EnableInput = '1') then
+								EstadoActual <= EstadoFetch;
+							end if;
+						when EstadoTempIN =>
+							if(EnableInput = '1') then
+								EstadoActual <= EstadoFetch;
+							end if;
+						when EstadoEntrenoIN =>
+							if(EnableInput = '1') then
+								EstadoActual <= EstadoFetch;
+							end if;
+						when EstadoComplTipoI =>
+							EstadoActual <= EstadoFetch;
+						when EstadoWB =>
+							EstadoActual <= EstadoFetch;
+						when others =>
+							EstadoActual <= EstadoReset;
+					end case;
+				else
+					EstadoActual <= EstadoReset;
+				end if;
+			end if;
+	end process;
+	
+	process(EstadoActual)
+		begin
+			case EstadoActual is
+				when EstadoReset =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001";
+					ResetPC <= '1';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoFetch =>
+					PCWriteCon <= '0';
+					PCSource <= "10";
+					PCWrite <= '1';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '1';
+					MemWrite <= '0';
+					IRWrite <= '1';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "01";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '1';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoDecode =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '1';
+					MemWrite <= '0';
+					IRWrite <= '1';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "11";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoBEQ =>
+					PCWriteCon <= '1';
+					PCSource <= "01"; --ENTRADA DIR BRANCH MUX
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "010"; --IGUAL
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoBNE =>
+					PCWriteCon <= '1';
+					PCSource <= "01"; --ENTRADA DIR BRANCH MUX
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "011"; --DIFERENTE
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoMNQ =>
+					PCWriteCon <= '1';
+					PCSource <= "01"; --ENTRADA DIR BRANCH MUX
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "100"; --MENOR QUE
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoMYQ =>
+					PCWriteCon <= '1';
+					PCSource <= "01"; --ENTRADA DIR BRANCH MUX
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "101"; --MAYOR QUE
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoJump =>
+					PCWriteCon <= '0';
+					PCSource <= "00"; --DIR JUMP
+					PCWrite <= '1';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoExecuteTipoR =>
+					PCWriteCon <= '0';
+					PCSource <= "00"; --DIR JUMP
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "000"; --FUNCTION
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoComplTipoR =>
+					PCWriteCon <= '0';
+					PCSource <= "00"; --DIR JUMP
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '1';
+					MemtoReg <= "01";
+					RegWrite <= '1';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "000"; --FUNCTION
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoCalcDir =>
+					PCWriteCon <= '0';
+					PCSource <= "00"; --DIR JUMP
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "10";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoSW =>
+					PCWriteCon <= '0';
+					PCSource <= "00"; --DIR JUMP
+					PCWrite <= '0';
+					IorD <= '1';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '1';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoLW =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '1';
+					DataDst <= "000";
+					MemRead <= '1';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '1';
+					EnableMDR <= '1';
+				when EstadoWB =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '1';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoModoIN =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '1';
+					DataDst <= "001";
+					MemRead <= '0';
+					MemWrite <= '1';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '1';
+					EnableMDR <= '0';
+				when EstadoTempIN =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '1';
+					DataDst <= "010";
+					MemRead <= '0';
+					MemWrite <= '1';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '1';
+					EnableMDR <= '0';
+				when EstadoEntrenoIN =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '1';
+					DataDst <= "011";
+					MemRead <= '0';
+					MemWrite <= '1';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '0';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '1';
+					EnableMDR <= '0';
+				when EstadoExecuteADDI =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "00";
+					RegWrite <= '0';
+					AluSrcA <= '1';
+					AluSrcB <= "10";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+				when EstadoComplTipoI =>
+					PCWriteCon <= '0';
+					PCSource <= "00";
+					PCWrite <= '0';
+					IorD <= '0';
+					DataDst <= "000";
+					MemRead <= '0';
+					MemWrite <= '0';
+					IRWrite <= '0';
+					RegDst <= '0';
+					MemtoReg <= "01";
+					RegWrite <= '1';
+					AluSrcA <= '1';
+					AluSrcB <= "00";
+					AluOP <= "001"; --SUMA
+					ResetPC <= '0';
+					EnableIR <= '0';
+					MDRWrite <= '0';
+					EnableMDR <= '0';
+			end case;
+	end process;
+end architecture;

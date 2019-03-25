@@ -1,0 +1,36 @@
+LIBRARY IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity ALU is
+port
+(
+                A: in std_logic_vector(31 downto 0);
+                B: in std_logic_vector(31 downto 0);
+                AluOP: in std_logic_vector(3 downto 0);
+                Resultado: out std_logic_vector(31 downto 0);
+                Flag: out std_logic
+);
+end entity;
+
+architecture ALU of ALU is
+begin
+                process(AluOP, A, B) 
+                               begin
+                                               if(AluOP = "0000") then
+                                                               Resultado <= std_logic_vector(signed(A)+signed(B));
+                                               elsif(AluOP = "0001") then
+                                                               Resultado <= std_logic_vector(unsigned(A)-unsigned(B);
+                                               elsif(AluOP = "1000") then
+                                                               Resultado <= A AND B;
+                                               elsif(AluOP = "1001") then
+                                                               Resultado <= A OR B;
+                                               elsif(AluOP = "0100") then
+                                                               if(std_logic_vector(unsigned(A)) = std_logic_vector(unsigned(B))) then
+                                                                               Flag <= '1';
+                                                               else
+                                                                               Flag <= '0';
+                                                               end if;
+                                               end if;
+                end process;
+end architecture;
